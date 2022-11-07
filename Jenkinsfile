@@ -21,12 +21,15 @@ pipeline {
         
         stage('Docker Build') {
           steps {
+            withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerpassword',        usernameVariable: 'dockeruser')]) {  
             sh 'sudo docker stop node-example'
             sh 'sudo docker rm node-example'
             sh 'sudo docker build -t henryun1/node-example .'
-            sh 'sudo docker login -u henryun1 -p dckr_pat_NIbj7eXTdEXqdBy5YpavZVtSijA'
+            sh 'sudo docker login -u $dockeruser -p $dockerpassword'
             sh 'sudo docker push henryun1/node-example:latest'
             sh 'sudo docker rmi henryun1/node-example:latest'
+            }    
+           
             //sh '<<Build Command>>'
           }
         }
